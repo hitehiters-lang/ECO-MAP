@@ -1,0 +1,285 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Документация к API.",
+        "title": "Eco Map API 2",
+        "contact": {},
+        "version": "0.1"
+    },
+    "basePath": "/",
+    "paths": {
+        "/api/air/measurements": {
+            "get": {
+                "description": "Возвращает все пробы воздуха за дату ДО и ПОСЛЕ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пробы"
+                ],
+                "summary": "Получить все пробы воздуха за период времени",
+                "operationId": "air_measurements",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "2024-02-01",
+                        "example": "2024-02-01",
+                        "description": "Дата с (YYYY-MM-DD)",
+                        "name": "date_from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "2024-02-28",
+                        "example": "2024-02-28",
+                        "description": "Дата до (YYYY-MM-DD)",
+                        "name": "date_to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schemas.AirMeasurements"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Возвращает ОК если проба успешно добавлена в БД",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пробы"
+                ],
+                "summary": "Создать новую пробу",
+                "operationId": "add_measurements",
+                "parameters": [
+                    {
+                        "description": "Данные пробы",
+                        "name": "comment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AirMeasurements"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.AirMeasurements": {
+            "type": "object",
+            "properties": {
+                "ch2o": {
+                    "type": "number"
+                },
+                "co": {
+                    "type": "number"
+                },
+                "coord_x": {
+                    "type": "number"
+                },
+                "coord_y": {
+                    "type": "number"
+                },
+                "cxhy": {
+                    "type": "number"
+                },
+                "h2s": {
+                    "type": "number"
+                },
+                "humidity_pct": {
+                    "type": "number"
+                },
+                "no": {
+                    "type": "number"
+                },
+                "no2": {
+                    "type": "number"
+                },
+                "pm10": {
+                    "type": "number"
+                },
+                "pm25": {
+                    "type": "number"
+                },
+                "point_name": {
+                    "type": "string"
+                },
+                "pressure_mmhg": {
+                    "type": "number"
+                },
+                "r_sh": {
+                    "type": "number"
+                },
+                "sample_date": {
+                    "type": "string"
+                },
+                "sample_no": {
+                    "type": "integer"
+                },
+                "so2": {
+                    "type": "number"
+                },
+                "temperature_c": {
+                    "type": "number"
+                },
+                "time_of_day": {
+                    "type": "string"
+                },
+                "vv": {
+                    "type": "number"
+                },
+                "wind_direction": {
+                    "type": "string"
+                },
+                "wind_speed_ms": {
+                    "type": "number"
+                }
+            }
+        },
+        "schemas.AirMeasurements": {
+            "type": "object",
+            "properties": {
+                "ch2o": {
+                    "type": "number"
+                },
+                "co": {
+                    "type": "number"
+                },
+                "coord_x": {
+                    "type": "number"
+                },
+                "coord_y": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "cxhy": {
+                    "type": "number"
+                },
+                "h2s": {
+                    "type": "number"
+                },
+                "humidity_pct": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "no": {
+                    "type": "number"
+                },
+                "no2": {
+                    "type": "number"
+                },
+                "pm10": {
+                    "type": "number"
+                },
+                "pm25": {
+                    "type": "number"
+                },
+                "point_name": {
+                    "type": "string"
+                },
+                "pressure_mmhg": {
+                    "type": "number"
+                },
+                "r_sh": {
+                    "type": "number"
+                },
+                "sample_date": {
+                    "type": "string"
+                },
+                "sample_no": {
+                    "type": "integer"
+                },
+                "so2": {
+                    "type": "number"
+                },
+                "temperature_c": {
+                    "type": "number"
+                },
+                "time_of_day": {
+                    "type": "string"
+                },
+                "vv": {
+                    "type": "number"
+                },
+                "wind_direction": {
+                    "type": "string"
+                },
+                "wind_speed_ms": {
+                    "type": "number"
+                }
+            }
+        }
+    }
+}

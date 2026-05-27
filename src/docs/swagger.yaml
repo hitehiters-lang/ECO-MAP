@@ -1,0 +1,190 @@
+basePath: /
+definitions:
+  models.AirMeasurements:
+    properties:
+      ch2o:
+        type: number
+      co:
+        type: number
+      coord_x:
+        type: number
+      coord_y:
+        type: number
+      cxhy:
+        type: number
+      h2s:
+        type: number
+      humidity_pct:
+        type: number
+      "no":
+        type: number
+      no2:
+        type: number
+      pm10:
+        type: number
+      pm25:
+        type: number
+      point_name:
+        type: string
+      pressure_mmhg:
+        type: number
+      r_sh:
+        type: number
+      sample_date:
+        type: string
+      sample_no:
+        type: integer
+      so2:
+        type: number
+      temperature_c:
+        type: number
+      time_of_day:
+        type: string
+      vv:
+        type: number
+      wind_direction:
+        type: string
+      wind_speed_ms:
+        type: number
+    type: object
+  schemas.AirMeasurements:
+    properties:
+      ch2o:
+        type: number
+      co:
+        type: number
+      coord_x:
+        type: number
+      coord_y:
+        type: number
+      created_at:
+        type: string
+      cxhy:
+        type: number
+      h2s:
+        type: number
+      humidity_pct:
+        type: number
+      id:
+        type: integer
+      "no":
+        type: number
+      no2:
+        type: number
+      pm10:
+        type: number
+      pm25:
+        type: number
+      point_name:
+        type: string
+      pressure_mmhg:
+        type: number
+      r_sh:
+        type: number
+      sample_date:
+        type: string
+      sample_no:
+        type: integer
+      so2:
+        type: number
+      temperature_c:
+        type: number
+      time_of_day:
+        type: string
+      vv:
+        type: number
+      wind_direction:
+        type: string
+      wind_speed_ms:
+        type: number
+    type: object
+info:
+  contact: {}
+  description: Документация к API.
+  title: Eco Map API 2
+  version: "0.1"
+paths:
+  /api/air/measurements:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает все пробы воздуха за дату ДО и ПОСЛЕ
+      operationId: air_measurements
+      parameters:
+      - default: "2024-02-01"
+        description: Дата с (YYYY-MM-DD)
+        example: "2024-02-01"
+        in: query
+        name: date_from
+        type: string
+      - default: "2024-02-28"
+        description: Дата до (YYYY-MM-DD)
+        example: "2024-02-28"
+        in: query
+        name: date_to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.AirMeasurements'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+      summary: Получить все пробы воздуха за период времени
+      tags:
+      - Пробы
+    post:
+      consumes:
+      - application/json
+      description: Возвращает ОК если проба успешно добавлена в БД
+      operationId: add_measurements
+      parameters:
+      - description: Данные пробы
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.AirMeasurements'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать новую пробу
+      tags:
+      - Пробы
+swagger: "2.0"
