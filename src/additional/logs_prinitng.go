@@ -33,7 +33,7 @@ func formatLog(timeStr, ipPath, level, message, color string) string {
 func PrintError(path string, err error) {
 	tn := time.Now().Format("Jan _2 15:04:05")
 	IPv4 := GetLocalIP()
-	fmt.Print(formatLog(tn, IPv4+path, "ERROR", err.Error(), redColor))
+	fmt.Print(formatLog(tn, IPv4+path, "CLIENT", err.Error(), yellowColor))
 }
 
 func PrintSuccess(path string, message string) {

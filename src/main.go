@@ -16,7 +16,7 @@ import (
 )
 
 // @title Eco Map API 2
-// @version 0.1
+// @version 0.11
 // @description Документация к API.
 // @BasePath /
 func main() {
