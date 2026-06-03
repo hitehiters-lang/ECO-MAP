@@ -61,12 +61,17 @@ func GetOrganizations(w http.ResponseWriter, r *http.Request) {
 	for _, o := range orgs {
 		if !o.Category.IsContainerYard {
 			org := models.Organization{
-				ID:         o.ID,
-				Name:       o.Name,
-				CategoryID: o.CategoryID,
-				CityID:     o.CityID,
+				ID:          o.ID,
+				Name:        o.Name,
+				CategoryID:  o.CategoryID,
+				CityID:      o.CityID,
+				Description: o.Description,
+				CoordX:      o.CoordX,
+				CoordY:      o.CoordY,
 			}
 			response_orgs = append(response_orgs, org)
+		} else {
+			count--
 		}
 	}
 

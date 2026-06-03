@@ -257,6 +257,15 @@ const docTemplate = `{
                 "city_id": {
                     "type": "integer"
                 },
+                "coord_x": {
+                    "type": "number"
+                },
+                "coord_y": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
