@@ -68,7 +68,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/schemas.AirMeasurements"
+                                "$ref": "#/definitions/models.Measure"
                             }
                         }
                     },
@@ -80,34 +80,78 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/orgs/{city_id}": {
+            "get": {
+                "description": "Возвращает все организации в городе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Получить все организации в определённом городе",
+                "operationId": "get_organizations",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "example": 1,
+                        "description": "ID города",
+                        "name": "city_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Organization"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad city id request\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"organizations not found\"}"
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "schemas.AirMeasurements": {
+        "models.Measure": {
             "type": "object",
             "properties": {
-                "ch2O": {
+                "ch2o": {
                     "type": "number"
                 },
                 "co": {
                     "type": "number"
                 },
-                "coordX": {
+                "coord_x": {
                     "type": "number"
                 },
-                "coordY": {
+                "coord_y": {
                     "type": "number"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "cxhy": {
                     "type": "number"
                 },
-                "h2S": {
+                "h2s": {
                     "type": "number"
                 },
-                "humidityPct": {
+                "humidity_pct": {
                     "type": "number"
                 },
                 "id": {
@@ -125,38 +169,55 @@ const docTemplate = `{
                 "pm25": {
                     "type": "number"
                 },
-                "pointID": {
+                "point_id": {
                     "type": "string"
                 },
-                "pointName": {
+                "point_name": {
                     "type": "string"
                 },
-                "pressureMmhg": {
+                "pressure_mmhg": {
                     "type": "number"
                 },
-                "rsh": {
+                "r_sh": {
                     "type": "number"
                 },
-                "sampleDatetime": {
+                "sample_datetime": {
                     "type": "string"
                 },
-                "sampleTime": {
+                "sample_time": {
                     "type": "string"
                 },
                 "so2": {
                     "type": "number"
                 },
-                "temperatureC": {
+                "temperature_c": {
                     "type": "number"
                 },
                 "vv": {
                     "type": "number"
                 },
-                "windDirection": {
+                "wind_direction": {
                     "type": "string"
                 },
-                "windSpeedMs": {
+                "wind_speed_ms": {
                     "type": "number"
+                }
+            }
+        },
+        "models.Organization": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "city_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }

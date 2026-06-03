@@ -1,22 +1,22 @@
 basePath: /
 definitions:
-  schemas.AirMeasurements:
+  models.Measure:
     properties:
-      ch2O:
+      ch2o:
         type: number
       co:
         type: number
-      coordX:
+      coord_x:
         type: number
-      coordY:
+      coord_y:
         type: number
-      createdAt:
+      created_at:
         type: string
       cxhy:
         type: number
-      h2S:
+      h2s:
         type: number
-      humidityPct:
+      humidity_pct:
         type: number
       id:
         type: integer
@@ -28,28 +28,39 @@ definitions:
         type: number
       pm25:
         type: number
-      pointID:
+      point_id:
         type: string
-      pointName:
+      point_name:
         type: string
-      pressureMmhg:
+      pressure_mmhg:
         type: number
-      rsh:
+      r_sh:
         type: number
-      sampleDatetime:
+      sample_datetime:
         type: string
-      sampleTime:
+      sample_time:
         type: string
       so2:
         type: number
-      temperatureC:
+      temperature_c:
         type: number
       vv:
         type: number
-      windDirection:
+      wind_direction:
         type: string
-      windSpeedMs:
+      wind_speed_ms:
         type: number
+    type: object
+  models.Organization:
+    properties:
+      category_id:
+        type: integer
+      city_id:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
     type: object
 info:
   contact: {}
@@ -95,7 +106,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/schemas.AirMeasurements'
+              $ref: '#/definitions/models.Measure'
             type: array
         "400":
           description: '{"error": "bad datetime request"}'
@@ -104,4 +115,34 @@ paths:
       summary: Получить все пробы воздуха за период времени
       tags:
       - Пробы
+  /api/orgs/{city_id}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает все организации в городе
+      operationId: get_organizations
+      parameters:
+      - default: 1
+        description: ID города
+        example: 1
+        in: path
+        name: city_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Organization'
+            type: array
+        "400":
+          description: '{"error": "bad city id request"}'
+        "404":
+          description: '{"error": "organizations not found"}'
+      summary: Получить все организации в определённом городе
+      tags:
+      - Организации
 swagger: "2.0"

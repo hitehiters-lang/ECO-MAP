@@ -6,6 +6,7 @@ import (
 	"eco-map-app/connection"
 	_ "eco-map-app/docs"
 	"eco-map-app/routers/air"
+	"eco-map-app/routers/organizations"
 	"net/http"
 	"os"
 
@@ -42,6 +43,7 @@ func main() {
 	r.Get("/api/docs/*", httpSwagger.WrapHandler)
 
 	r.Get("/api/air/measurements", air.GetMeasurements)
+	r.Get("/api/orgs/{city_id}", organizations.GetOrganizations)
 
 	additional.PrintSuccess("", "Стартуем сервер на "+IPv4)
 	additional.PrintSuccess("/api/docs/", "Документация доступна по адресу")

@@ -20,7 +20,7 @@ import (
 // @Param date_from query string true "Дата с (YYYY-MM-DD)" example(2024-02-01) default(2024-02-01)
 // @Param date_to query string true "Дата до (YYYY-MM-DD)" example(2024-02-28) default(2024-02-28)
 // @Param time query string true "Время пробы" Enums(01:00, 07:00, 12:00, 18:00)
-// @Success 200 {array} schemas.AirMeasurements
+// @Success 200 {array} models.Measure
 // @Failure 400 "{"error": "bad datetime request"}"
 // @Failure 404 "{"error": "air samples not found"}"
 // @Router /api/air/measurements [get]
@@ -49,16 +49,16 @@ func GetMeasurements(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var air_samples []schemas.AirMeasurements
-	err = db.NewSelect().
+	count, err := db.NewSelect().
 		Model(&air_samples).
 		Where("sample_datetime >= ? AND sample_datetime <= ? AND sample_time = ?", date_from, date_to, time_str).
-		Scan(ctx)
+		ScanAndCount(ctx)
 	if err != nil {
 		additional.PrintError(path, err)
 		http.Error(w, `{"error": "air samples not found"}`, http.StatusNotFound)
 		return
 	}
-	if len(air_samples) == 0 {
+	if count == 0 || len(air_samples) == 0 {
 		additional.PrintError(path, fmt.Errorf("Пробы не найдены по фильтрам"))
 		http.Error(w, `{"error": "air samples not found"}`, http.StatusNotFound)
 		return
@@ -99,5 +99,5 @@ func GetMeasurements(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response_samples)
 
-	additional.PrintSuccess(path, "Получены данные проб воздуха")
+	additional.PrintSuccess(path, fmt.Sprintf("Получены данные проб воздуха (%d)", count))
 }
