@@ -24,4 +24,6 @@ type Sensors struct {
 	R_SH             float64   `json:"r_sh"`
 	Raw              string    `json:"raw"`
 	CreatedAt        time.Time `json:"created_at"`
+	CoordX           float64   `json:"coord_x"`
+	CoordY           float64   `json:"coord_y"`
 }
