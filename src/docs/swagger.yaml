@@ -81,7 +81,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.12"
+  version: "0.13"
 paths:
   /api/air/measurements:
     get:
