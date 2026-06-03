@@ -42,7 +42,6 @@ func main() {
 	r.Get("/api/docs/*", httpSwagger.WrapHandler)
 
 	r.Get("/api/air/measurements", air.GetMeasurements)
-	r.Post("/api/air/measurements", air.AddMeasurements)
 
 	additional.PrintSuccess("", "Стартуем сервер на "+IPv4)
 	additional.PrintSuccess("/api/docs/", "Документация доступна по адресу")

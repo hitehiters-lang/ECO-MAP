@@ -1,69 +1,22 @@
 basePath: /
 definitions:
-  models.AirMeasurements:
-    properties:
-      ch2o:
-        type: number
-      co:
-        type: number
-      coord_x:
-        type: number
-      coord_y:
-        type: number
-      cxhy:
-        type: number
-      h2s:
-        type: number
-      humidity_pct:
-        type: number
-      "no":
-        type: number
-      no2:
-        type: number
-      pm10:
-        type: number
-      pm25:
-        type: number
-      point_name:
-        type: string
-      pressure_mmhg:
-        type: number
-      r_sh:
-        type: number
-      sample_date:
-        type: string
-      sample_no:
-        type: integer
-      so2:
-        type: number
-      temperature_c:
-        type: number
-      time_of_day:
-        type: string
-      vv:
-        type: number
-      wind_direction:
-        type: string
-      wind_speed_ms:
-        type: number
-    type: object
   schemas.AirMeasurements:
     properties:
-      ch2o:
+      ch2O:
         type: number
       co:
         type: number
-      coord_x:
+      coordX:
         type: number
-      coord_y:
+      coordY:
         type: number
-      created_at:
+      createdAt:
         type: string
       cxhy:
         type: number
-      h2s:
+      h2S:
         type: number
-      humidity_pct:
+      humidityPct:
         type: number
       id:
         type: integer
@@ -75,27 +28,27 @@ definitions:
         type: number
       pm25:
         type: number
-      point_name:
+      pointID:
         type: string
-      pressure_mmhg:
-        type: number
-      r_sh:
-        type: number
-      sample_date:
+      pointName:
         type: string
-      sample_no:
-        type: integer
+      pressureMmhg:
+        type: number
+      rsh:
+        type: number
+      sampleDatetime:
+        type: string
+      sampleTime:
+        type: string
       so2:
         type: number
-      temperature_c:
+      temperatureC:
         type: number
-      time_of_day:
-        type: string
       vv:
         type: number
-      wind_direction:
+      windDirection:
         type: string
-      wind_speed_ms:
+      windSpeedMs:
         type: number
     type: object
 info:
@@ -116,12 +69,24 @@ paths:
         example: "2024-02-01"
         in: query
         name: date_from
+        required: true
         type: string
       - default: "2024-02-28"
         description: Дата до (YYYY-MM-DD)
         example: "2024-02-28"
         in: query
         name: date_to
+        required: true
+        type: string
+      - description: Время пробы
+        enum:
+        - "01:00"
+        - "07:00"
+        - "12:00"
+        - "18:00"
+        in: query
+        name: time
+        required: true
         type: string
       produces:
       - application/json
@@ -133,58 +98,10 @@ paths:
               $ref: '#/definitions/schemas.AirMeasurements'
             type: array
         "400":
-          description: Bad Request
-          schema:
-            items:
-              additionalProperties:
-                type: string
-              type: object
-            type: array
+          description: '{"error": "bad datetime request"}'
         "404":
-          description: Not Found
-          schema:
-            items:
-              additionalProperties:
-                type: string
-              type: object
-            type: array
+          description: '{"error": "air samples not found"}'
       summary: Получить все пробы воздуха за период времени
-      tags:
-      - Пробы
-    post:
-      consumes:
-      - application/json
-      description: Возвращает ОК если проба успешно добавлена в БД
-      operationId: add_measurements
-      parameters:
-      - description: Данные пробы
-        in: body
-        name: comment
-        required: true
-        schema:
-          $ref: '#/definitions/models.AirMeasurements'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Создать новую пробу
       tags:
       - Пробы
 swagger: "2.0"
