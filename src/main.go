@@ -3,12 +3,16 @@ package main
 import (
 	"context"
 	"eco-map-app/additional"
+	"eco-map-app/auth"
 	"eco-map-app/config"
 	"eco-map-app/connection"
 	_ "eco-map-app/docs"
 	"eco-map-app/routers/air"
+	"eco-map-app/routers/authorize"
 	"eco-map-app/routers/categories"
+	"eco-map-app/routers/cities"
 	"eco-map-app/routers/organizations"
+	"eco-map-app/routers/users"
 	"eco-map-app/ws"
 	"net/http"
 	"os"
@@ -17,6 +21,12 @@ import (
 	"github.com/go-chi/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @bearerFormat JWT
+// @description Введите JWT токен
 
 // @title Eco Map API 2
 // @version 0.13
@@ -56,6 +66,15 @@ func main() {
 	r.Get("/api/orgs/{city_id}", organizations.GetOrganizations)
 
 	r.Get("/api/categories/list", categories.GetCategories)
+
+	r.Get("/api/cities/list", cities.GetCities)
+
+	r.Post("/api/auth/login", authorize.Login)
+
+	r.Group(func(r chi.Router) {
+		r.Use(auth.JWTAuth)
+		r.Get("/api/users/list", users.GetUsers)
+	})
 
 	r.Get("/ws/sensors", ws.WsHandler(hub))
 

@@ -74,6 +74,44 @@
                 }
             }
         },
+        "/api/auth/login": {
+            "post": {
+                "description": "Вход по логину и паролю. Возвращает JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Аутентификация"
+                ],
+                "summary": "Войти",
+                "operationId": "log_in",
+                "parameters": [
+                    {
+                        "description": "Данные пользователя",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"token\": \"token\", \"type\": \"bearer\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"invalid credentials\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/api/categories/list": {
             "get": {
                 "description": "Возвращает все категории организаций и контейнерных площадок",
@@ -100,6 +138,36 @@
                     },
                     "404": {
                         "description": "{\"error\": \"categories not found\"}"
+                    }
+                }
+            }
+        },
+        "/api/cities/list": {
+            "get": {
+                "description": "Возвращает список всех городов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Города"
+                ],
+                "summary": "Получить все города",
+                "operationId": "get_cities",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.City"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"error\": \"cities not found\"}"
                     }
                 }
             }
@@ -147,6 +215,47 @@
                     }
                 }
             }
+        },
+        "/api/users/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает список всех пользователей",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Получить всех пользователей",
+                "operationId": "get_users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.UserPublic"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "403": {
+                        "description": "{\"error\": \"not superuser\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"users not found\"}"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -160,6 +269,28 @@
                     "type": "boolean"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.City": {
+            "type": "object",
+            "properties": {
+                "city_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.LoginBody": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -266,6 +397,31 @@
                     "type": "string"
                 }
             }
+        },
+        "models.UserPublic": {
+            "type": "object",
+            "properties": {
+                "city_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_superuser": {
+                    "type": "boolean"
+                },
+                "login": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Введите JWT токен",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

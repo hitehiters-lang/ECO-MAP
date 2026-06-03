@@ -9,6 +9,20 @@ definitions:
       name:
         type: string
     type: object
+  models.City:
+    properties:
+      city_name:
+        type: string
+      id:
+        type: integer
+    type: object
+  models.LoginBody:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
   models.Measure:
     properties:
       ch2o:
@@ -77,6 +91,17 @@ definitions:
       name:
         type: string
     type: object
+  models.UserPublic:
+    properties:
+      city_id:
+        type: integer
+      id:
+        type: integer
+      is_superuser:
+        type: boolean
+      login:
+        type: string
+    type: object
 info:
   contact: {}
   description: Документация к API.
@@ -130,6 +155,31 @@ paths:
       summary: Получить все пробы воздуха за период времени
       tags:
       - Пробы
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Вход по логину и паролю. Возвращает JWT
+      operationId: log_in
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"token": "token", "type": "bearer"}'
+        "404":
+          description: '{"error": "invalid credentials"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      summary: Войти
+      tags:
+      - Аутентификация
   /api/categories/list:
     get:
       consumes:
@@ -150,6 +200,26 @@ paths:
       summary: Получить все категории
       tags:
       - Категории
+  /api/cities/list:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех городов
+      operationId: get_cities
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.City'
+            type: array
+        "404":
+          description: '{"error": "cities not found"}'
+      summary: Получить все города
+      tags:
+      - Города
   /api/orgs/{city_id}:
     get:
       consumes:
@@ -180,4 +250,36 @@ paths:
       summary: Получить все организации в определённом городе
       tags:
       - Организации
+  /api/users/list:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список всех пользователей
+      operationId: get_users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserPublic'
+            type: array
+        "401":
+          description: '{"error": "unauthorized"}'
+        "403":
+          description: '{"error": "not superuser"}'
+        "404":
+          description: '{"error": "users not found"}'
+      security:
+      - BearerAuth: []
+      summary: Получить всех пользователей
+      tags:
+      - Пользователи
+securityDefinitions:
+  BearerAuth:
+    description: Введите JWT токен
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
