@@ -10,4 +10,5 @@ type Organizations struct {
 	CoordY      float64 `bun:"coord_y"`
 
 	Category *Categories `bun:"rel:belongs-to,join:category_id=id"`
+	City     *Cities     `bun:"rel:belongs-to,join:city_id=id"`
 }
