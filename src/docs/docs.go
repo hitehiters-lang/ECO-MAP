@@ -81,6 +81,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/categories/list": {
+            "get": {
+                "description": "Возвращает все категории организаций и контейнерных площадок",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Получить все категории",
+                "operationId": "get_categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Category"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"error\": \"categories not found\"}"
+                    }
+                }
+            }
+        },
         "/api/orgs/{city_id}": {
             "get": {
                 "description": "Возвращает все организации в городе",
@@ -127,6 +157,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Category": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "is_container_yard": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Measure": {
             "type": "object",
             "properties": {
@@ -226,7 +270,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.1",
+	Version:          "0.12",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},

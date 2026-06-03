@@ -6,6 +6,7 @@ import (
 	"eco-map-app/connection"
 	_ "eco-map-app/docs"
 	"eco-map-app/routers/air"
+	"eco-map-app/routers/categories"
 	"eco-map-app/routers/organizations"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ import (
 )
 
 // @title Eco Map API 2
-// @version 0.11
+// @version 0.12
 // @description Документация к API.
 // @BasePath /
 func main() {
@@ -44,6 +45,7 @@ func main() {
 
 	r.Get("/api/air/measurements", air.GetMeasurements)
 	r.Get("/api/orgs/{city_id}", organizations.GetOrganizations)
+	r.Get("/api/categories/list", categories.GetCategories)
 
 	additional.PrintSuccess("", "Стартуем сервер на "+IPv4)
 	additional.PrintSuccess("/api/docs/", "Документация доступна по адресу")

@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  models.Category:
+    properties:
+      id:
+        type: integer
+      is_container_yard:
+        type: boolean
+      name:
+        type: string
+    type: object
   models.Measure:
     properties:
       ch2o:
@@ -66,7 +75,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.1"
+  version: "0.12"
 paths:
   /api/air/measurements:
     get:
@@ -115,6 +124,26 @@ paths:
       summary: Получить все пробы воздуха за период времени
       tags:
       - Пробы
+  /api/categories/list:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает все категории организаций и контейнерных площадок
+      operationId: get_categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+        "404":
+          description: '{"error": "categories not found"}'
+      summary: Получить все категории
+      tags:
+      - Категории
   /api/orgs/{city_id}:
     get:
       consumes:

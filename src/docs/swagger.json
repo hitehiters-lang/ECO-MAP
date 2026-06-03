@@ -4,7 +4,7 @@
         "description": "Документация к API.",
         "title": "Eco Map API 2",
         "contact": {},
-        "version": "0.1"
+        "version": "0.12"
     },
     "basePath": "/",
     "paths": {
@@ -74,6 +74,36 @@
                 }
             }
         },
+        "/api/categories/list": {
+            "get": {
+                "description": "Возвращает все категории организаций и контейнерных площадок",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Получить все категории",
+                "operationId": "get_categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Category"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "{\"error\": \"categories not found\"}"
+                    }
+                }
+            }
+        },
         "/api/orgs/{city_id}": {
             "get": {
                 "description": "Возвращает все организации в городе",
@@ -120,6 +150,20 @@
         }
     },
     "definitions": {
+        "models.Category": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "is_container_yard": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Measure": {
             "type": "object",
             "properties": {
