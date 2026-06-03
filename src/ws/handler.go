@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -36,6 +37,9 @@ func NewHub() *Hub {
 }
 
 func (h *Hub) Run() {
+
+	go h.healthCheck()
+
 	for {
 		select {
 		case conn := <-h.register:
@@ -97,5 +101,18 @@ func WsHandler(hub *Hub) http.HandlerFunc {
 				}
 			}
 		}()
+	}
+}
+
+func (h *Hub) healthCheck() {
+	ticker := time.NewTicker(1 * time.Hour)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		h.mu.Lock()
+		clientCount := len(h.clients)
+		h.mu.Unlock()
+
+		additional.PrintSuccess("/ws", fmt.Sprintf("Вебсокет работает. всего клиентов: %d", clientCount))
 	}
 }
