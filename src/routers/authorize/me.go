@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Success 200 {object} models.UserPublic
 // @Failure 401 "{"error": "unauthorized"}"
-// @Router /api/users/me [get]
+// @Router /api/auth/me [get]
 func MeUser(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	w.Header().Set("Content-Type", "application/json")

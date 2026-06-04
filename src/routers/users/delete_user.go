@@ -38,7 +38,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user_id, err := strconv.Atoi(user_id_str)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "bad reqest"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "bad request"})
 		additional.PrintError(path, err)
 		return
 	}

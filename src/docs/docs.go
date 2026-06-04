@@ -122,6 +122,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/auth/logout": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Кидает токен в чёрный список, делая невозможными действия с ним",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Аутентификация"
+                ],
+                "summary": "Выход из аккаунта",
+                "operationId": "log_out",
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"success logout\"}"
+                    },
+                    "429": {
+                        "description": "{\"error\": \"token has been revoked\"}, {\"error\": \"authorization header required\"}, {\"error\": \"invalid token\"}"
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает данные о своём пользователе из Authorization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Аутентификация"
+                ],
+                "summary": "Посмотреть данные о себе",
+                "operationId": "me_user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserPublic"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    }
+                }
+            }
+        },
         "/api/categories/list": {
             "get": {
                 "description": "Возвращает все категории организаций и контейнерных площадок",
@@ -319,14 +380,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users/me": {
-            "get": {
+        "/api/users/root/add": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Возвращает данные о своём пользователе из Authorization",
+                "description": "Создание нового пользователя в БД. Доступно только root. Возвращает данные о созданном пользователе",
                 "consumes": [
                     "application/json"
                 ],
@@ -334,10 +395,21 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Аутентификация"
+                    "Пользователи"
                 ],
-                "summary": "Посмотреть данные о себе",
-                "operationId": "me_user",
+                "summary": "Добавить пользователя (root)",
+                "operationId": "add_superuser",
+                "parameters": [
+                    {
+                        "description": "Данные нового пользователя",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddSuperuserBody"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -345,8 +417,67 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.UserPublic"
                         }
                     },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}, {\"error\": \"login is not unique\"}"
+                    },
                     "401": {
                         "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "403": {
+                        "description": "{\"error\": \"not root\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
+        "/api/users/root/{user_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаление любого пользователя из БД. Доступно только root",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Удалить пользователя (root)",
+                "operationId": "delete_superuser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"user successfully deleted\"}"
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "403": {
+                        "description": "{\"error\": \"not root\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"user not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
                     }
                 }
             }
@@ -433,6 +564,27 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AddSuperuserBody": {
+            "type": "object",
+            "properties": {
+                "city_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "is_superuser": {
+                    "type": "boolean"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AddUserBody": {
             "type": "object",
             "properties": {
@@ -697,7 +849,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.2",
+	Version:          "0.21",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},

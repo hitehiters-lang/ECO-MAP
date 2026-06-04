@@ -29,7 +29,7 @@ import (
 // @description Введите JWT токен
 
 // @title Eco Map API 2
-// @version 0.2
+// @version 0.21
 // @description Документация к API.
 // @BasePath /
 func main() {
@@ -76,8 +76,11 @@ func main() {
 		r.Get("/api/users/list", users.GetUsers)
 		r.Post("/api/users/add", users.AddUser)
 		r.Delete("/api/users/{user_id}", users.DeleteUser)
+		r.Post("/api/users/root/add", users.AddSuperuser)
+		r.Delete("/api/users/root/{user_id}", users.DeleteSuperuser)
 
-		r.Get("/api/users/me", authorize.MeUser)
+		r.Get("/api/auth/me", authorize.MeUser)
+		r.Post("/api/auth/logout", authorize.Logout)
 	})
 
 	r.Get("/ws/sensors", ws.WsHandler(hub))

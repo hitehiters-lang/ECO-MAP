@@ -1,5 +1,19 @@
 basePath: /
 definitions:
+  models.AddSuperuserBody:
+    properties:
+      city_id:
+        example: 1
+        type: integer
+      is_superuser:
+        type: boolean
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   models.AddUserBody:
     properties:
       city_id:
@@ -169,7 +183,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.2"
+  version: "0.21"
 paths:
   /api/air/measurements:
     get:
@@ -243,6 +257,45 @@ paths:
         "500":
           description: '{"error": "internal server error"}'
       summary: Войти
+      tags:
+      - Аутентификация
+  /api/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Кидает токен в чёрный список, делая невозможными действия с ним
+      operationId: log_out
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "success logout"}'
+        "429":
+          description: '{"error": "token has been revoked"}, {"error": "authorization
+            header required"}, {"error": "invalid token"}'
+      security:
+      - BearerAuth: []
+      summary: Выход из аккаунта
+      tags:
+      - Аутентификация
+  /api/auth/me:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает данные о своём пользователе из Authorization
+      operationId: me_user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserPublic'
+        "401":
+          description: '{"error": "unauthorized"}'
+      security:
+      - BearerAuth: []
+      summary: Посмотреть данные о себе
       tags:
       - Аутентификация
   /api/categories/list:
@@ -409,12 +462,52 @@ paths:
       summary: Получить всех пользователей
       tags:
       - Пользователи
-  /api/users/me:
-    get:
+  /api/users/root/{user_id}:
+    delete:
       consumes:
       - application/json
-      description: Возвращает данные о своём пользователе из Authorization
-      operationId: me_user
+      description: Удаление любого пользователя из БД. Доступно только root
+      operationId: delete_superuser
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "user successfully deleted"}'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "403":
+          description: '{"error": "not root"}'
+        "404":
+          description: '{"error": "user not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Удалить пользователя (root)
+      tags:
+      - Пользователи
+  /api/users/root/add:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового пользователя в БД. Доступно только root. Возвращает
+        данные о созданном пользователе
+      operationId: add_superuser
+      parameters:
+      - description: Данные нового пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddSuperuserBody'
       produces:
       - application/json
       responses:
@@ -422,13 +515,19 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.UserPublic'
+        "400":
+          description: '{"error": "bad request"}, {"error": "login is not unique"}'
         "401":
           description: '{"error": "unauthorized"}'
+        "403":
+          description: '{"error": "not root"}'
+        "500":
+          description: '{"error": "internal server error"}'
       security:
       - BearerAuth: []
-      summary: Посмотреть данные о себе
+      summary: Добавить пользователя (root)
       tags:
-      - Аутентификация
+      - Пользователи
   /ws/sensors:
     get:
       consumes:
