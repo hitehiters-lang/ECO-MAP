@@ -3,7 +3,7 @@ package schemas
 import "time"
 
 type AirMeasurements struct {
-	ID             int       `bun:"id,pk"`
+	ID             int       `bun:"id,pk,autoincrement"`
 	PointID        string    `bun:"point_id"`
 	PointName      string    `bun:"point_name"`
 	CoordX         float64   `bun:"coord_x"`

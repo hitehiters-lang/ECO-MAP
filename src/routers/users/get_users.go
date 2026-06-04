@@ -45,13 +45,18 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	var response_users []models.UserPublic
 	for _, u := range users {
-		user := models.UserPublic{
-			ID:          u.ID,
-			Login:       u.Login,
-			CityID:      u.CityID,
-			IsSuperuser: u.IsSuperuser,
+		if u.Login != "root" {
+			user := models.UserPublic{
+				ID:          u.ID,
+				Login:       u.Login,
+				CityID:      u.CityID,
+				IsSuperuser: u.IsSuperuser,
+				Name:        u.Name,
+			}
+			response_users = append(response_users, user)
+		} else {
+			count--
 		}
-		response_users = append(response_users, user)
 	}
 
 	w.WriteHeader(http.StatusOK)

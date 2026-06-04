@@ -1,7 +1,7 @@
 package schemas
 
 type Organizations struct {
-	ID          int     `bun:"id,pk"`
+	ID          int     `bun:"id,pk,autoincrement"`
 	Name        string  `bun:"name"`
 	CategoryID  int     `bun:"category_id"`
 	CityID      int     `bun:"city_id"`

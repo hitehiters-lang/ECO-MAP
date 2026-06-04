@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  models.AddUserBody:
+    properties:
+      city_id:
+        example: 1
+        type: integer
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   models.Category:
     properties:
       id:
@@ -150,12 +162,14 @@ definitions:
         type: boolean
       login:
         type: string
+      name:
+        type: string
     type: object
 info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.14"
+  version: "0.2"
 paths:
   /api/air/measurements:
     get:
@@ -222,6 +236,8 @@ paths:
       responses:
         "200":
           description: '{"token": "token", "type": "bearer"}'
+        "400":
+          description: '{"error": "bad request"}'
         "404":
           description: '{"error": "invalid credentials"}'
         "500":
@@ -299,6 +315,73 @@ paths:
       summary: Получить все организации в определённом городе
       tags:
       - Организации
+  /api/users/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление пользователя из БД. Доступно только superuser. Не может
+        удалять других superuser
+      operationId: delete_user
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "user successfully deleted"}'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "403":
+          description: '{"error": "not superuser"}'
+        "404":
+          description: '{"error": "user not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Удалить пользователя (superuser)
+      tags:
+      - Пользователи
+  /api/users/add:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового пользователя в БД. Доступно только superuser. Возвращает
+        данные о созданном пользователе
+      operationId: add_user
+      parameters:
+      - description: Данные нового пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddUserBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserPublic'
+        "400":
+          description: '{"error": "bad request"}, {"error": "login is not unique"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "403":
+          description: '{"error": "not superuser"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Добавить пользователя (superuser)
+      tags:
+      - Пользователи
   /api/users/list:
     get:
       consumes:
@@ -325,6 +408,26 @@ paths:
       summary: Получить всех пользователей
       tags:
       - Пользователи
+  /api/users/me:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает данные о своём пользователе из Authorization
+      operationId: me_user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserPublic'
+        "401":
+          description: '{"error": "unauthorized"}'
+      security:
+      - BearerAuth: []
+      summary: Посмотреть данные о себе
+      tags:
+      - Аутентификация
   /ws/sensors:
     get:
       consumes:

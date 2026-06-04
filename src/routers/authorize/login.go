@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // @Tags Аутентификация
@@ -19,6 +21,7 @@ import (
 // @Produce json
 // @Param input body models.LoginBody true "Данные пользователя"
 // @Success 200 "{"token": "token", "type": "bearer"}"
+// @Failure 400 "{"error": "bad request"}"
 // @Failure 404 "{"error": "invalid credentials"}"
 // @Failure 500 "{"error": "internal server error"}"
 // @Router /api/auth/login [post]
@@ -39,8 +42,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	var user schemas.Users
 	err = db.NewSelect().
-		Model(&user). //////////////////// DELETE
-		Where("login = ? AND password = ?", input.Login, input.Password).
+		Model(&user).
+		Where("login = ?", input.Login).
 		Scan(ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -48,7 +51,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		additional.PrintError(path, fmt.Errorf("Попытка логина пользователя '%s'", input.Login))
 		return
 	}
-	// TODO - HASH COMPARING
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid credentials"})
+		additional.PrintError(path, fmt.Errorf("Попытка логина пользователя '%s'", input.Login))
+		return
+	}
 
 	token, err := auth.GenerateJWT(user.ID)
 	if err != nil {

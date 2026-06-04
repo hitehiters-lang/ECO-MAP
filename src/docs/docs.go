@@ -110,6 +110,9 @@ const docTemplate = `{
                     "200": {
                         "description": "{\"token\": \"token\", \"type\": \"bearer\"}"
                     },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
                     "404": {
                         "description": "{\"error\": \"invalid credentials\"}"
                     },
@@ -223,6 +226,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/users/add": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создание нового пользователя в БД. Доступно только superuser. Возвращает данные о созданном пользователе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Добавить пользователя (superuser)",
+                "operationId": "add_user",
+                "parameters": [
+                    {
+                        "description": "Данные нового пользователя",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddUserBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserPublic"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}, {\"error\": \"login is not unique\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "403": {
+                        "description": "{\"error\": \"not superuser\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/api/users/list": {
             "get": {
                 "security": [
@@ -264,6 +319,88 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает данные о своём пользователе из Authorization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Аутентификация"
+                ],
+                "summary": "Посмотреть данные о себе",
+                "operationId": "me_user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserPublic"
+                        }
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    }
+                }
+            }
+        },
+        "/api/users/{user_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаление пользователя из БД. Доступно только superuser. Не может удалять других superuser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Удалить пользователя (superuser)",
+                "operationId": "delete_user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"user successfully deleted\"}"
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "403": {
+                        "description": "{\"error\": \"not superuser\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"user not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/ws/sensors": {
             "get": {
                 "description": "Пример вебсокета. Сам роут не работает",
@@ -296,6 +433,24 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AddUserBody": {
+            "type": "object",
+            "properties": {
+                "city_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "login": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Category": {
             "type": "object",
             "properties": {
@@ -523,6 +678,9 @@ const docTemplate = `{
                 },
                 "login": {
                     "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }
@@ -539,7 +697,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.14",
+	Version:          "0.2",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},

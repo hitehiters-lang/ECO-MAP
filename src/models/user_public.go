@@ -5,4 +5,5 @@ type UserPublic struct {
 	Login       string `json:"login"`
 	CityID      int    `json:"city_id"`
 	IsSuperuser bool   `json:"is_superuser"`
+	Name        string `json:"name"`
 }
