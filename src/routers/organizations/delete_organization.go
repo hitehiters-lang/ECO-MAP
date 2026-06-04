@@ -56,7 +56,7 @@ func DeleteOrganization(w http.ResponseWriter, r *http.Request) {
 	if rows == 0 {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(map[string]string{"error": "organization not found"})
-		additional.PrintError(path, fmt.Errorf("Проба с ID %d не найдена", org_id))
+		additional.PrintError(path, fmt.Errorf("Организация с ID %d не найдена", org_id))
 		return
 	}
 	if err != nil {

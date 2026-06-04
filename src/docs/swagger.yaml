@@ -1,5 +1,13 @@
 basePath: /
 definitions:
+  models.AddCategoryBody:
+    properties:
+      is_container_yard:
+        example: false
+        type: boolean
+      name:
+        type: string
+    type: object
   models.AddMeasureBody:
     properties:
       ch2o:
@@ -270,7 +278,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.23"
+  version: "0.3"
 paths:
   /api/air/{measure_id}:
     delete:
@@ -449,6 +457,68 @@ paths:
       summary: Посмотреть данные о себе
       tags:
       - Аутентификация
+  /api/categories/{category_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет категорию из БД по ID. Также удаляет каскадом все организации,
+        принадлежвашие этой категории
+      operationId: delete_category
+      parameters:
+      - description: ID категории
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "category successfully deleted"}'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "404":
+          description: '{"error": "category not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Удалить категорию
+      tags:
+      - Категории
+  /api/categories/add:
+    post:
+      consumes:
+      - application/json
+      description: Создание новой категории в БД. Возвращает данные о созданной категории
+      operationId: add_category
+      parameters:
+      - description: Данные новой категории
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCategoryBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Добавить категорию
+      tags:
+      - Категории
   /api/categories/list:
     get:
       consumes:

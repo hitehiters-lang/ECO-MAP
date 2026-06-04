@@ -282,6 +282,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/categories/add": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создание новой категории в БД. Возвращает данные о созданной категории",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Добавить категорию",
+                "operationId": "add_category",
+                "parameters": [
+                    {
+                        "description": "Данные новой категории",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddCategoryBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/api/categories/list": {
             "get": {
                 "description": "Возвращает все категории организаций и контейнерных площадок",
@@ -308,6 +357,53 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "{\"error\": \"categories not found\"}"
+                    }
+                }
+            }
+        },
+        "/api/categories/{category_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет категорию из БД по ID. Также удаляет каскадом все организации, принадлежвашие этой категории",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Категории"
+                ],
+                "summary": "Удалить категорию",
+                "operationId": "delete_category",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID категории",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"category successfully deleted\"}"
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"category not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
                     }
                 }
             }
@@ -762,6 +858,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AddCategoryBody": {
+            "type": "object",
+            "properties": {
+                "is_container_yard": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AddMeasureBody": {
             "type": "object",
             "properties": {
@@ -1166,7 +1274,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.23",
+	Version:          "0.3",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
