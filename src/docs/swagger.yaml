@@ -69,6 +69,24 @@ definitions:
         example: 8
         type: number
     type: object
+  models.AddOrganizationBody:
+    properties:
+      category_id:
+        type: integer
+      city_id:
+        example: 1
+        type: integer
+      coord_x:
+        example: 47.11638889
+        type: number
+      coord_y:
+        example: 51.93421389
+        type: number
+      description:
+        type: string
+      name:
+        type: string
+    type: object
   models.AddSuperuserBody:
     properties:
       city_id:
@@ -252,7 +270,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.22"
+  version: "0.23"
 paths:
   /api/air/{measure_id}:
     delete:
@@ -499,6 +517,70 @@ paths:
         "404":
           description: '{"error": "organizations not found"}'
       summary: Получить все организации в определённом городе
+      tags:
+      - Организации
+  /api/orgs/{org_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет организацию из БД по ID
+      operationId: delete_organization
+      parameters:
+      - description: ID организации
+        in: path
+        name: org_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "organization successfully deleted"}'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "404":
+          description: '{"error": "organization not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Удалить организацию
+      tags:
+      - Организации
+  /api/orgs/add:
+    post:
+      consumes:
+      - application/json
+      description: Создание новой организации в БД. Возвращает данные о созданной
+        организации
+      operationId: add_organization
+      parameters:
+      - description: Данные новой организации
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddOrganizationBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Organization'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "404":
+          description: '{"error": "category not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Добавить организацию
       tags:
       - Организации
   /api/users/{user_id}:

@@ -342,6 +342,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/orgs/add": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создание новой организации в БД. Возвращает данные о созданной организации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Добавить организацию",
+                "operationId": "add_organization",
+                "parameters": [
+                    {
+                        "description": "Данные новой организации",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddOrganizationBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Organization"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"category not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/api/orgs/{city_id}": {
             "get": {
                 "description": "Возвращает все организации в городе",
@@ -382,6 +434,53 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "{\"error\": \"organizations not found\"}"
+                    }
+                }
+            }
+        },
+        "/api/orgs/{org_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет организацию из БД по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Организации"
+                ],
+                "summary": "Удалить организацию",
+                "operationId": "delete_organization",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID организации",
+                        "name": "org_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"organization successfully deleted\"}"
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"organization not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
                     }
                 }
             }
@@ -756,6 +855,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AddOrganizationBody": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "city_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "coord_x": {
+                    "type": "number",
+                    "example": 47.11638889
+                },
+                "coord_y": {
+                    "type": "number",
+                    "example": 51.93421389
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AddSuperuserBody": {
             "type": "object",
             "properties": {
@@ -1041,7 +1166,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.22",
+	Version:          "0.23",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
