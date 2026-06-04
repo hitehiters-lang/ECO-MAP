@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Sensors struct {
+type Sensor struct {
 	ID               int64     `json:"id"`
 	SensorID         int       `json:"sensor_id"`
 	MeasuredAt       time.Time `json:"measured_at"`

@@ -3,7 +3,6 @@ package ws
 import (
 	"eco-map-app/additional"
 	"fmt"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -76,7 +75,6 @@ func (h *Hub) Run() {
 
 func WsHandler(hub *Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("📥 Запрос на WebSocket: %s %s | Upgrade: %s", r.Method, r.URL.Path, r.Header.Get("Upgrade"))
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			additional.PrintServerError(err.Error())

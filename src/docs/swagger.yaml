@@ -91,6 +91,55 @@ definitions:
       name:
         type: string
     type: object
+  models.Sensor:
+    properties:
+      ch2o:
+        type: number
+      co:
+        type: number
+      coord_x:
+        type: number
+      coord_y:
+        type: number
+      created_at:
+        type: string
+      cxhy:
+        type: number
+      h2s:
+        type: number
+      humidity_pct:
+        type: number
+      id:
+        type: integer
+      measured_at:
+        type: string
+      "no":
+        type: number
+      no2:
+        type: number
+      pm2_5:
+        type: number
+      pm10:
+        type: number
+      pressure_mmhg:
+        type: number
+      r_sh:
+        type: number
+      raw:
+        type: string
+      sensor_id:
+        type: integer
+      so2:
+        type: number
+      temperature_c:
+        type: number
+      vv:
+        type: number
+      wind_direction_deg:
+        type: number
+      wind_speed_ms:
+        type: number
+    type: object
   models.UserPublic:
     properties:
       city_id:
@@ -106,7 +155,7 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.13"
+  version: "0.14"
 paths:
   /api/air/measurements:
     get:
@@ -276,6 +325,26 @@ paths:
       summary: Получить всех пользователей
       tags:
       - Пользователи
+  /ws/sensors:
+    get:
+      consumes:
+      - application/json
+      description: Пример вебсокета. Сам роут не работает
+      operationId: sensors_ws
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Sensor'
+            type: array
+        "400":
+          description: Bad Request
+      summary: Получение резултатов датчика (Websocket)
+      tags:
+      - Датчики
 securityDefinitions:
   BearerAuth:
     description: Введите JWT токен

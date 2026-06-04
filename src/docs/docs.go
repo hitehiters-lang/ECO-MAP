@@ -263,6 +263,36 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ws/sensors": {
+            "get": {
+                "description": "Пример вебсокета. Сам роут не работает",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Датчики"
+                ],
+                "summary": "Получение резултатов датчика (Websocket)",
+                "operationId": "sensors_ws",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Sensor"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -405,6 +435,80 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Sensor": {
+            "type": "object",
+            "properties": {
+                "ch2o": {
+                    "type": "number"
+                },
+                "co": {
+                    "type": "number"
+                },
+                "coord_x": {
+                    "type": "number"
+                },
+                "coord_y": {
+                    "type": "number"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "cxhy": {
+                    "type": "number"
+                },
+                "h2s": {
+                    "type": "number"
+                },
+                "humidity_pct": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "measured_at": {
+                    "type": "string"
+                },
+                "no": {
+                    "type": "number"
+                },
+                "no2": {
+                    "type": "number"
+                },
+                "pm10": {
+                    "type": "number"
+                },
+                "pm2_5": {
+                    "type": "number"
+                },
+                "pressure_mmhg": {
+                    "type": "number"
+                },
+                "r_sh": {
+                    "type": "number"
+                },
+                "raw": {
+                    "type": "string"
+                },
+                "sensor_id": {
+                    "type": "integer"
+                },
+                "so2": {
+                    "type": "number"
+                },
+                "temperature_c": {
+                    "type": "number"
+                },
+                "vv": {
+                    "type": "number"
+                },
+                "wind_direction_deg": {
+                    "type": "number"
+                },
+                "wind_speed_ms": {
+                    "type": "number"
+                }
+            }
+        },
         "models.UserPublic": {
             "type": "object",
             "properties": {
@@ -435,7 +539,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.13",
+	Version:          "0.14",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
