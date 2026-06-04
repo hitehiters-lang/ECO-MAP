@@ -29,7 +29,7 @@ import (
 // @description Введите JWT токен
 
 // @title Eco Map API 2
-// @version 0.3
+// @version 0.31
 // @description Документация к API.
 // @BasePath /
 func main() {

@@ -26,4 +26,7 @@ type Sensors struct {
 	CreatedAt        time.Time `bun:"created_at"`
 	CoordX           float64   `bun:"coord_x"`
 	CoordY           float64   `bun:"coord_y"`
+	SensorCode       string    `bun:"sensor_code"`
+	SerialNo         string    `bun:"serial_no"`
+	Location         string    `bun:"location"`
 }

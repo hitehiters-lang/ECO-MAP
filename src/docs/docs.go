@@ -1197,6 +1197,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "measured_at": {
                     "type": "string"
                 },
@@ -1221,8 +1224,14 @@ const docTemplate = `{
                 "raw": {
                     "type": "string"
                 },
+                "sensor_code": {
+                    "type": "string"
+                },
                 "sensor_id": {
                     "type": "integer"
+                },
+                "serial_no": {
+                    "type": "string"
                 },
                 "so2": {
                     "type": "number"

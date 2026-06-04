@@ -59,6 +59,9 @@ func StartSensorsWebsocket(db *bun.DB, hub *Hub, ctx context.Context) {
 						CreatedAt:        s.CreatedAt,
 						CoordX:           s.CoordX,
 						CoordY:           s.CoordY,
+						SensorCode:       s.SensorCode,
+						SerialNo:         s.SerialNo,
+						Location:         s.Location,
 					}
 					response_sensors = append(response_sensors, sensor)
 				}
