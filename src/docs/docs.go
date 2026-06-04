@@ -15,6 +15,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/air/add": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создание новой пробы воздуха в БД. Возвращает данные о созданной пробе",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пробы"
+                ],
+                "summary": "Добавить пробу воздуха",
+                "operationId": "add_measure",
+                "parameters": [
+                    {
+                        "description": "Данные новой пробы",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddMeasureBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Measure"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "409": {
+                        "description": "{\"error\": \"that sample is already in db\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
+                    }
+                }
+            }
+        },
         "/api/air/measurements": {
             "get": {
                 "description": "Возвращает все пробы воздуха за дату ДО и ПОСЛЕ",
@@ -77,6 +129,53 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "{\"error\": \"air samples not found\"}"
+                    }
+                }
+            }
+        },
+        "/api/air/{measure_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Удаляет пробу воздуха из БД по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пробы"
+                ],
+                "summary": "Удалить пробу воздуха",
+                "operationId": "delete_measure",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID пробы (не point_id!)",
+                        "name": "measure_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"message\": \"measure successfully deleted\"}"
+                    },
+                    "400": {
+                        "description": "{\"error\": \"bad request\"}"
+                    },
+                    "401": {
+                        "description": "{\"error\": \"unauthorized\"}"
+                    },
+                    "404": {
+                        "description": "{\"error\": \"measure not found\"}"
+                    },
+                    "500": {
+                        "description": "{\"error\": \"internal server error\"}"
                     }
                 }
             }
@@ -564,6 +663,99 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AddMeasureBody": {
+            "type": "object",
+            "properties": {
+                "ch2o": {
+                    "type": "number",
+                    "example": 0
+                },
+                "co": {
+                    "type": "number",
+                    "example": 0
+                },
+                "coord_x": {
+                    "type": "number",
+                    "example": 47.122992
+                },
+                "coord_y": {
+                    "type": "number",
+                    "example": 51.831142
+                },
+                "cxhy": {
+                    "type": "number",
+                    "example": 0
+                },
+                "h2s": {
+                    "type": "number",
+                    "example": 0
+                },
+                "humidity_pct": {
+                    "type": "number",
+                    "example": 91
+                },
+                "no": {
+                    "type": "number",
+                    "example": 0
+                },
+                "no2": {
+                    "type": "number",
+                    "example": 0
+                },
+                "pm10": {
+                    "type": "number",
+                    "example": 0
+                },
+                "pm25": {
+                    "type": "number",
+                    "example": 0
+                },
+                "point_id": {
+                    "type": "string",
+                    "example": "AS-1"
+                },
+                "point_name": {
+                    "type": "string",
+                    "example": "AS-1"
+                },
+                "pressure_mmhg": {
+                    "type": "number",
+                    "example": 764
+                },
+                "r_sh": {
+                    "type": "number",
+                    "example": 0
+                },
+                "sample_datetime": {
+                    "type": "string",
+                    "example": "2024-02-14T04:00:00+03:00"
+                },
+                "sample_time": {
+                    "type": "string",
+                    "example": "12:00"
+                },
+                "so2": {
+                    "type": "number",
+                    "example": 0
+                },
+                "temperature_c": {
+                    "type": "number",
+                    "example": 0
+                },
+                "vv": {
+                    "type": "number",
+                    "example": 0
+                },
+                "wind_direction": {
+                    "type": "string",
+                    "example": "СВ"
+                },
+                "wind_speed_ms": {
+                    "type": "number",
+                    "example": 8
+                }
+            }
+        },
         "models.AddSuperuserBody": {
             "type": "object",
             "properties": {
@@ -849,7 +1041,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.21",
+	Version:          "0.22",
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},

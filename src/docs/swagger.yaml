@@ -1,5 +1,74 @@
 basePath: /
 definitions:
+  models.AddMeasureBody:
+    properties:
+      ch2o:
+        example: 0
+        type: number
+      co:
+        example: 0
+        type: number
+      coord_x:
+        example: 47.122992
+        type: number
+      coord_y:
+        example: 51.831142
+        type: number
+      cxhy:
+        example: 0
+        type: number
+      h2s:
+        example: 0
+        type: number
+      humidity_pct:
+        example: 91
+        type: number
+      "no":
+        example: 0
+        type: number
+      no2:
+        example: 0
+        type: number
+      pm10:
+        example: 0
+        type: number
+      pm25:
+        example: 0
+        type: number
+      point_id:
+        example: AS-1
+        type: string
+      point_name:
+        example: AS-1
+        type: string
+      pressure_mmhg:
+        example: 764
+        type: number
+      r_sh:
+        example: 0
+        type: number
+      sample_datetime:
+        example: "2024-02-14T04:00:00+03:00"
+        type: string
+      sample_time:
+        example: "12:00"
+        type: string
+      so2:
+        example: 0
+        type: number
+      temperature_c:
+        example: 0
+        type: number
+      vv:
+        example: 0
+        type: number
+      wind_direction:
+        example: СВ
+        type: string
+      wind_speed_ms:
+        example: 8
+        type: number
+    type: object
   models.AddSuperuserBody:
     properties:
       city_id:
@@ -183,8 +252,72 @@ info:
   contact: {}
   description: Документация к API.
   title: Eco Map API 2
-  version: "0.21"
+  version: "0.22"
 paths:
+  /api/air/{measure_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет пробу воздуха из БД по ID
+      operationId: delete_measure
+      parameters:
+      - description: ID пробы (не point_id!)
+        in: path
+        name: measure_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"message": "measure successfully deleted"}'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "404":
+          description: '{"error": "measure not found"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Удалить пробу воздуха
+      tags:
+      - Пробы
+  /api/air/add:
+    post:
+      consumes:
+      - application/json
+      description: Создание новой пробы воздуха в БД. Возвращает данные о созданной
+        пробе
+      operationId: add_measure
+      parameters:
+      - description: Данные новой пробы
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddMeasureBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Measure'
+        "400":
+          description: '{"error": "bad request"}'
+        "401":
+          description: '{"error": "unauthorized"}'
+        "409":
+          description: '{"error": "that sample is already in db"}'
+        "500":
+          description: '{"error": "internal server error"}'
+      security:
+      - BearerAuth: []
+      summary: Добавить пробу воздуха
+      tags:
+      - Пробы
   /api/air/measurements:
     get:
       consumes:

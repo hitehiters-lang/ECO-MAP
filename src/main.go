@@ -29,7 +29,7 @@ import (
 // @description Введите JWT токен
 
 // @title Eco Map API 2
-// @version 0.21
+// @version 0.22
 // @description Документация к API.
 // @BasePath /
 func main() {
@@ -73,6 +73,9 @@ func main() {
 
 	r.Group(func(r chi.Router) {
 		r.Use(auth.JWTAuth)
+		r.Post("/api/air/add", air.AddMeasurement)
+		r.Delete("/api/air/{measure_id}", air.DeleteMeasurement)
+
 		r.Get("/api/users/list", users.GetUsers)
 		r.Post("/api/users/add", users.AddUser)
 		r.Delete("/api/users/{user_id}", users.DeleteUser)
