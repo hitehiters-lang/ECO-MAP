@@ -390,7 +390,7 @@ const docTemplate = `{
                         "description": "{\"error\": \"unauthorized\"}"
                     },
                     "403": {
-                        "description": "{\"error\": \"not superuser\"}"
+                        "description": "{\"error\": \"not superuser\"}, {\"error\": \"superuser can't delete superuser\"}"
                     },
                     "404": {
                         "description": "{\"error\": \"user not found\"}"

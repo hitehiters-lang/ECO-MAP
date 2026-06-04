@@ -23,7 +23,7 @@ import (
 // @Param user_id path int true "ID пользователя"
 // @Success 200 "{"message": "user successfully deleted"}"
 // @Failure 400 "{"error": "bad request"}"
-// @Failure 403 "{"error": "not superuser"}"
+// @Failure 403 "{"error": "not superuser"}, {"error": "superuser can't delete superuser"}"
 // @Failure 401 "{"error": "unauthorized"}"
 // @Failure 404 "{"error": "user not found"}"
 // @Failure 500 "{"error": "internal server error"}"
